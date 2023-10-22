@@ -4,9 +4,6 @@ using Newtonsoft.Json;
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-
-
-
 class ElevenLabs {
 
     const string baseDir = @".\"; // Base Directory of output file
