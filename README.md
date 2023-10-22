@@ -7,6 +7,6 @@ To find Voice IDs go to : https://api.elevenlabs.io/v1/voices and search for a V
 ### Using the Class
 To use, simply create a ElevenLabs object and in the constructer input your key, then await the RequestAudio function. 
 The function will take in 3 parameters :
-1. Prompt is what you want it to say
-2. Voice is the VoiceID
-3. fileName is the name of the file you want it to create
+1. Prompt : What you want it to say
+2. Voice : The VoiceID of the voice you want to use
+3. File Name : The name of the file you want it to create
