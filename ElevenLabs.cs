@@ -47,7 +47,7 @@ class ElevenLabs {
 
             while (!fileNameValid) {
                 try {
-                    while (File.Exists(@".\" + fileName + fileNameExtension.ToString() + ".mp3")) {
+                    while (File.Exists(baseDir + " + fileName + fileNameExtension.ToString() + ".mp3")) {
                         fileNameExtension++;
                     }
                 } catch (Exception ex) {
