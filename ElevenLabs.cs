@@ -5,73 +5,73 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 
 
-namespace VoicePad {
 
-    class ElevenLabs {
 
-        const string baseDir = @".\"; // Base Directory of output file
-        const string baseURL = "https://api.elevenlabs.io/v1/text-to-speech/"; // Base URL of HTTP request
-        public string API_KEY { get; } // Eleven Labs API key
-        public bool requesting = false;
-        
-        public ElevenLabs(string key) { this.API_KEY = key; }
+class ElevenLabs {
 
-        // Requests MPEG file containing AI Voice saying the prompt and outputs the directory to said file
-        public async Task<string> RequestAudio(string prompt, string voice, string fileName) {
+    const string baseDir = @".\"; // Base Directory of output file
+    const string baseURL = "https://api.elevenlabs.io/v1/text-to-speech/"; // Base URL of HTTP request
+    public string API_KEY { get; } // Eleven Labs API key
+    public bool requesting = false;
+    
+    public ElevenLabs(string key) { this.API_KEY = key; }
 
-            string url = baseURL + voice; // Concatenate Voice ID to end of URL
-            HttpClient client = new HttpClient();
+    // Requests MPEG file containing AI Voice saying the prompt and outputs the directory to said file
+    public async Task<string> RequestAudio(string prompt, string voice, string fileName) {
 
-            client.DefaultRequestHeaders.Add("xi-api-key", API_KEY); // Add API Key header
-            client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("audio/mpeg")); // Add accepted file extension header
+        string url = baseURL + voice; // Concatenate Voice ID to end of URL
+        HttpClient client = new HttpClient();
 
-            var data = new {
-                text = prompt,
-                model_id = "eleven_monolingual_v1",
-                voice_settings = new {
-                    stability = 0.5f,
-                    similarity_boost = 0.5f
-                }
-            }; // Set-up Data
+        client.DefaultRequestHeaders.Add("xi-api-key", API_KEY); // Add API Key header
+        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("audio/mpeg")); // Add accepted file extension header
 
-            // Convert Data to JSON
-            string json = JsonConvert.SerializeObject(data);
-            StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
+        var data = new {
+            text = prompt,
+            model_id = "eleven_monolingual_v1",
+            voice_settings = new {
+                stability = 0.5f,
+                similarity_boost = 0.5f
+            }
+        }; // Set-up Data
 
-            // Request MPEG
-            var response = await client.PostAsync(url, httpContent);
-            requesting = false;
+        // Convert Data to JSON
+        string json = JsonConvert.SerializeObject(data);
+        StringContent httpContent = new StringContent(json, System.Text.Encoding.UTF8, "application/json");
 
-            // Output Response to local MPEG file in the respective directory
-            if (response != null) {
+        // Request MPEG
+        var response = await client.PostAsync(url, httpContent);
+        requesting = false;
 
-                int fileNameExtension = 0;
-                bool fileNameValid = false;
+        // Output Response to local MPEG file in the respective directory
+        if (response != null) {
 
-                while (!fileNameValid) {
-                    
-                    while (File.Exists(@".\Audio\" + fileName + fileNameExtension.ToString() + ".mp3")) {
-                        fileNameExtension++;
-                    }
-                   
-                    using (Stream stream = await response.Content.ReadAsStreamAsync())
-                    using (FileStream fileStream = File.Create(@".\Audio\" + fileName + fileNameExtension.ToString() + ".mp3")) {
-                        await stream.CopyToAsync(fileStream);
-                    }
+            int fileNameExtension = 0;
+            bool fileNameValid = false;
 
-                    fileNameValid = true;
-                }
-
-                if (fileNameValid)
-                    return fileName + fileNameExtension.ToString() + ".mp3";
+            while (!fileNameValid) {
                 
+                while (File.Exists(@".\Audio\" + fileName + fileNameExtension.ToString() + ".mp3")) {
+                    fileNameExtension++;
+                }
+               
+                using (Stream stream = await response.Content.ReadAsStreamAsync())
+                using (FileStream fileStream = File.Create(@".\Audio\" + fileName + fileNameExtension.ToString() + ".mp3")) {
+                    await stream.CopyToAsync(fileStream);
+                }
+
+                fileNameValid = true;
             }
 
-            // Return Directory to file
-            return null;
-
+            if (fileNameValid)
+                return fileName + fileNameExtension.ToString() + ".mp3";
+            
         }
+
+        // Return Directory to file
+        return null;
 
     }
 
 }
+
+
