@@ -46,10 +46,15 @@ class ElevenLabs {
             bool fileNameValid = false;
 
             while (!fileNameValid) {
-                
-                while (File.Exists(@".\" + fileName + fileNameExtension.ToString() + ".mp3")) {
-                    fileNameExtension++;
+                try {
+                    while (File.Exists(@".\" + fileName + fileNameExtension.ToString() + ".mp3")) {
+                        fileNameExtension++;
+                    }
+                } catch (Exception ex) {
+                    Console.WriteLine(ex.ToString());
+                    break;
                 }
+                
                
                 using (Stream stream = await response.Content.ReadAsStreamAsync())
                 using (FileStream fileStream = File.Create(@".\Audio\" + fileName + fileNameExtension.ToString() + ".mp3")) {
